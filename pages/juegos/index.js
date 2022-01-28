@@ -17,7 +17,7 @@ export async function getServerSideProps({ req }) {
 
 export default function index({ juegos }) {
     return <Page>
-        <main className='p-5'>
+        <main>
             <Juegos juegos={juegos} />
         </main>
     </Page>;
