@@ -1,32 +1,37 @@
 import { useState } from 'react'
-import Saludo from '../components/Saludo'
-import Link from 'next/link'
-import Products from '../components/Products'
 import axios from 'axios'
-import Page from '../components/Page'
+import Link from 'next/link'
 
-export async function getServerSideProps({req}){
-  // Lunes: Una solución a este problema
-  const {data:products} = await axios.get(`http://${req.headers.host}/api/productos/filtrar?popular=true`)
+import Saludo from '../components/Saludo'
+import Page from '../components/Page'
+import Products from '../components/Products'
+import Juegos from '../components/Juegos'
+
+export async function getServerSideProps({ req }) {
+  const { data: products } = await axios.get(`http://${req.headers.host}/api/productos/filtrar?popular=true`)
+  const { data: juegos } = await axios.get(`http://${req.headers.host}/api/juegos?popular=true`)
 
   return {
-      props:{
-          products
-      }
+    props: {
+      products,
+      juegos
+    }
   }
 }
-export default function Home({products}) {
-  const [open,setOpen] = useState(false)
+export default function Home({ products, juegos }) {
+  const [open, setOpen] = useState(false)
   return (
     <Page>
       <p className=' text-yellow-400 text-3xl'>Prueba tailwind</p>
-      {open&&<p>Hola!!!</p>}
-      <button onClick={()=>{setOpen(!open)}}>Presionar</button>
-      <Saludo/>
+      {open && <p>Hola!!!</p>}
+      <button onClick={() => { setOpen(!open) }}>Presionar</button>
+      <Saludo />
 
       <Link href="/characters">Ir a personajes</Link>
       <Link href="/charactersSSR">Ir a personajes SSR</Link>
-      <Products products={products}/>
+      <Products products={products} />
+      <br /> <hr /> <br />
+      <Juegos juegos={juegos} />
     </Page>
   )
 }

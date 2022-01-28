@@ -1,5 +1,5 @@
 import admin from 'firebase-admin'
-import serviceAccount from './credentials_firebase.json'
+import serviceAccount from './credentials.json'
 
 let app
 
