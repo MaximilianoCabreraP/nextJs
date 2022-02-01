@@ -10,7 +10,7 @@ export default async function juegos(req, res) {
 
     const juegos = []
     snapshot.forEach(doc => {
-        juegos.push(doc.data())
+        juegos.push({ id: doc.id, ...doc.data() })
     })
 
     return res.status(200).json(juegos)

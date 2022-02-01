@@ -5,7 +5,6 @@ import Link from 'next/link'
 import Saludo from '../components/Saludo'
 import Page from '../components/Page'
 import Products from '../components/Products'
-import Juegos from '../components/Juegos'
 
 export async function getServerSideProps({ req }) {
   const { data: products } = await axios.get(`http://${req.headers.host}/api/productos/filtrar?popular=true`)
@@ -31,7 +30,7 @@ export default function Home({ products, juegos }) {
       <Link href="/charactersSSR">Ir a personajes SSR</Link>
       <Products products={products} />
       <br /> <hr /> <br />
-      <Juegos juegos={juegos} />
+      <Products products={juegos} />
     </Page>
   )
 }
