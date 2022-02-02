@@ -1,20 +1,46 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+
+export const saveCart = createAsyncThunk("cart/saveCart", async (cart, { getState }) => {
+    const { cart: { items } } = getState();
+
+    const result = await fetch("http://localhost:3000/api/cart", {
+        method: "POST",
+        body: JSON.stringify({ username: "Meme", data: { items } }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+
+    const data = await result.json();
+    console.log("Data: ", data);
+
+    return data;
+})
 
 const cartSlice = createSlice({
     name: "cart",
+    loading: false,
+    error: false,
     initialState: {
         items: []
     },
     reducers: {
         addToCart: (state, action) => {
-            const index = state.items.findIndex((product) => product.id === action.payload.id);
-            if (index !== -1) {
-                state.items[index].quantity += 1;
-            } else {
-                action.payload.quantity = 1;
-                action.payload.stock = 3;
-                state.items.push(action.payload)
+            //!Ver error que al borrar del carrito se borran cosas de más, se deseteará el state?
+            console.log("State: ", state.items);
+            //!Si, despues de eliminar state queda como "undefined"
+            if (state.items) {
+                const index = state.items.findIndex((product) => product.id === action.payload.id);
+                if (index !== -1) {
+                    state.items[index].quantity += 1;
+                    return;
+                }
             }
+
+            action.payload.quantity = 1;
+            console.log("Action.payload: ", action.payload);
+            state.items.push(action.payload)
+
         },
         removeFromCart: (state, action) => {
             state.items = state.items.find((product) => product.id !== action.payload.id)
@@ -37,6 +63,17 @@ const cartSlice = createSlice({
                 console.log("No existe el producto");
             }
         }
+    },
+    extraReducers(builder) {
+        builder.addCase(saveCart.pending, (state, action) => {
+            state.loading = true;
+        }).addCase(saveCart.fulfilled, (state, action) => {
+            state.loading = false;
+            state.error = false;
+        }).addCase(saveCart.rejected, (state, action) => {
+            state.loading = false;
+            state.error = true;
+        })
     }
 })
 

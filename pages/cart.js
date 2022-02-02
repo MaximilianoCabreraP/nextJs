@@ -7,7 +7,11 @@ export default function cart() {
     const { items } = useSelector(state => state.cart)
     return <Page>
         <section>
-            <Products products={items}></Products>
+            {items ?
+                <Products products={items}></Products>
+                :
+                "Vacío"
+            }
         </section>
     </Page>;
 };

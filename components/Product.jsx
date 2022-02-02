@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from "framer-motion"
 import { useDispatch } from 'react-redux';
 
-import { addToCart, removeFromCart, reduceFromCart, sumToCart } from '../features/Cart';
+import { addToCart, removeFromCart, reduceFromCart, sumToCart, saveCart } from '../features/Cart';
 
 
 import { GrAddCircle, GrSubtractCircle, GrTrash } from 'react-icons/gr';
@@ -12,17 +12,20 @@ export default function Product({ product }) {
     const dispatch = useDispatch();
     const agregarAlCarrito = () => {
         dispatch(addToCart(product))
+        dispatch(saveCart())
     }
     const removerDelCarrito = () => {
         dispatch(removeFromCart(product))
+        dispatch(saveCart())
     }
     const restarDelCarrito = () => {
         dispatch(reduceFromCart(product))
+        dispatch(saveCart())
     }
     const sumarAlCarrito = () => {
         dispatch(sumToCart(product))
+        dispatch(saveCart())
     }
-    let classSubtract = product.quantity > 1 ? "" : "";
     return <motion.article
         initial={{
             opacity: 0
@@ -35,8 +38,8 @@ export default function Product({ product }) {
         }}
         className='bg-white shadow-md'>
         <div className='p-2'>
-            <h3 className='text-2xl font-bold'>{product.name ? product.name : product.nombre}</h3>
-            <p className='my-3'>{product.description ?? product.consola}</p>
+            <h3 className='text-2xl font-bold'>{product.name}</h3>
+            <p className='my-3'>{product.description}</p>
             {product.quantity ?
                 <>
                     <div className="flex justify-between">
@@ -55,6 +58,6 @@ export default function Product({ product }) {
                 </>
             }
         </div>
-        <img src={product.img ?? product.imagen}></img>
+        <img src={product.img}></img>
     </motion.article>;
 }
