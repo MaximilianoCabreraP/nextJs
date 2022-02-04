@@ -6,8 +6,6 @@ export default async function saveCart({ body, method }, res) {
             .doc(body.username)
             .set(body.data)
 
-        console.log("snapshot: ", snapshot);
-
         res.json({ success: true });
     }
 }

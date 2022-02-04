@@ -12,35 +12,49 @@ export const saveCart = createAsyncThunk("cart/saveCart", async (cart, { getStat
     })
 
     const data = await result.json();
-    console.log("Data: ", data);
+
+    return data;
+})
+export const getCart = createAsyncThunk("cart/getCart", async () => {
+    const result = await fetch("http://localhost:3000/api/cart/get", {
+        method: "POST",
+        body: JSON.stringify({ username: "Meme" }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+
+    const data = await result.json();
 
     return data;
 })
 
+
 const cartSlice = createSlice({
     name: "cart",
-    loading: false,
-    error: false,
     initialState: {
+        loading: false,
+        error: false,
         items: []
     },
     reducers: {
         addToCart: (state, action) => {
-            //!Ver error que al borrar del carrito se borran cosas de más, se deseteará el state?
-            console.log("State: ", state.items);
-            //!Si, despues de eliminar state queda como "undefined"
+            console.log("Producto", { ...action.payload })
+
+            console.log("State: ", state);
+            console.log("State items: ", state.items);
             if (state.items) {
-                const index = state.items.findIndex((product) => product.id === action.payload.id);
-                if (index !== -1) {
-                    state.items[index].quantity += 1;
-                    return;
-                }
+                console.log("1");
+            } else {
+                console.log("2");
             }
-
-            action.payload.quantity = 1;
-            console.log("Action.payload: ", action.payload);
-            state.items.push(action.payload)
-
+            const index = state.items.findIndex(product => product.id === action.payload.id)
+            if (index !== -1) {
+                state.items[index].quantity += 1;
+            } else {
+                const newObject = { ...action.payload, quantity: 1 };
+                state.items.push(newObject);
+            }
         },
         removeFromCart: (state, action) => {
             state.items = state.items.find((product) => product.id !== action.payload.id)
@@ -71,6 +85,15 @@ const cartSlice = createSlice({
             state.loading = false;
             state.error = false;
         }).addCase(saveCart.rejected, (state, action) => {
+            state.loading = false;
+            state.error = true;
+        }).addCase(getCart.pending, (state, action) => {
+            state.loading = true;
+        }).addCase(getCart.fulfilled, (state, action) => {
+            state.loading = false;
+            state.error = false;
+            state.items = action.payload.items;
+        }).addCase(getCart.rejected, (state, action) => {
             state.loading = false;
             state.error = true;
         })

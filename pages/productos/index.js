@@ -4,7 +4,6 @@ import Products from '../../components/Products';
 import Page from '../../components/Page';
 
 export async function getServerSideProps({ req }) {
-    // Lunes: Una solución a este problema
     const { data: products } = await axios.get(`http://${req.headers.host}/api/productos`)
 
     return {

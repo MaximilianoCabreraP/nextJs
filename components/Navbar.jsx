@@ -4,8 +4,12 @@ import { useSelector } from 'react-redux';
 
 export default function Navbar() {
   const [show, setShow] = useState(false)
-  const cart = useSelector((state) => state.cart.items)
-  let itemsCarrito = cart ? cart.reduce((accumulator, item) => accumulator + item.quantity, 0) : 0;
+  const { items: cart } = useSelector((state) => state.cart)
+
+  let itemsCarrito = cart ? cart.reduce((accumulator, item) => accumulator + item.cantidad, 0) : 0;
+  // console.log("Cart length: ", cart.length);
+  // cart.map(c => console.log(c, c.cantidad))
+
   return <nav className='bg-white shadow-md mb-5 py-3 px-5 sm:px-0'>
     <div className='flex justify-between max-w-4xl mx-auto'>
       <Link href={"/"}>Inicio</Link>
